@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台中公車即時到站查詢</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fff;
+            transition: background 0.3s, color 0.3s;
+        }
+        .navbar-mrb {
+            background: #5b8df6;
+            color: #fff;
+            padding: 18px 32px;
+            font-size: 2.5rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .navbar-mrb span {
+            font-size: 2rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            margin-left: 16px;
+        }
+        @media (max-width: 768px) {
+            .navbar-mrb {
+                font-size: 2rem;
+                flex-direction: row;
+                align-items: flex-end;
+                padding: 0 10px 4px 10px;
+                min-height: 48px;
+                justify-content: space-between;
+            }
+            .navbar-mrb span {
+                font-size: 1.5rem;
+                margin-left: 8px;
+            }
+            .topbar-right {
+                margin-top: 8px;
+                align-self: flex-end;
+            }
+        }
+        .main-content {
+            margin-top: 0px;
+        }
+        /* 夜覽模式 */
+        body.dark-mode {
+            background-color: #23272f;
+            color: #e0e0e0;
+        }
+        body.dark-mode .navbar-mrb {
+            background: #222b3a;
+            color: #fff;
+        }
+        body.dark-mode .table {
+            background-color: #23272f;
+            color: #e0e0e0;
+        }
+        body.dark-mode .form-control {
+            background: #2d323c;
+            color: #e0e0e0;
+        }
+        body.dark-mode .table-striped > tbody > tr:nth-of-type(odd) {
+            background-color: #2d323c;
+        }
+        body.dark-mode .btn-light {
+            background: #444b5a;
+            color: #fff;
+        }
+        /* 強制夜間模式下 input 文字為黑色 */
+        body.dark-mode .form-control {
+            color: #000 !important;
+        }
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0px;
+        }
+        /* 單一圓形日夜模式按鈕，icon絕對置中 */
+        .dark-toggle-btn {
+            background: #fff;
+            border: 2px solid #3377ee;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s, border 0.2s;
+            font-size: 1.7rem;
+            box-shadow: 0 2px 8px #0001;
+            margin-left: 10px;
+            padding: 0;
+        }
+        .dark-toggle-btn .icon-sun,
+        .dark-toggle-btn .icon-moon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            font-size: 1.5rem;
+            line-height: 1;
+            margin: 0;
+        }
+        .dark-toggle-btn .icon-sun img,
+        .dark-toggle-btn .icon-moon img {
+            width: 24px;
+            height: 24px;
+            display: block;
+            margin: auto;
+        }
+        .dark-toggle-btn:hover {
+            background: #e0e0e0;
+        }
+        body.dark-mode .dark-toggle-btn {
+            background: #23272f;
+            border-color: #ffe066;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar-mrb">
+        <div>M-R-B <span>中途小巴</span></div>
+        <div class="topbar-right">
+            <button class="dark-toggle-btn" id="darkModeToggle" title="切換夜覽模式">
+                <span id="darkModeIcon" class="icon-sun">
+                    <img src="{% static 'images/sun-icon.png' %}" alt="sun" style="width: 24px; height: 24px;">
+                </span>
+            </button>
+        </div>
+    </div>
+    <div class="main-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.getElementById('darkModeToggle');
+        const icon = document.getElementById('darkModeIcon');
+        const body = document.body;
+        const sunImg = '<img src="{% static "images/sun-icon.png" %}" alt="sun" style="width: 24px; height: 24px;">';
+        const moonImg = '<img src="{% static "images/moon-icon.png" %}" alt="moon" style="width: 24px; height: 24px;">';
+        function setDarkMode(on) {
+            if(on) {
+                body.classList.add('dark-mode');
+                icon.innerHTML = moonImg;
+                icon.className = 'icon-moon';
+            } else {
+                body.classList.remove('dark-mode');
+                icon.innerHTML = sunImg;
+                icon.className = 'icon-sun';
+            }
+        }
+        // 讀取 localStorage
+        const darkPref = localStorage.getItem('darkMode') === 'true';
+        setDarkMode(darkPref);
+        toggleBtn.onclick = function() {
+            const isDark = body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+            setDarkMode(isDark);
+        };
+    });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 text-center mb-4" style="margin-top: 32px;">
+            <h5 style="font-weight: 500; letter-spacing: 0.1em;">請輸入要查詢的公車號碼</h5>
+        </div>
+        <div class="col-12 d-flex justify-content-center mb-4">
+            <form method="post" class="w-100 w-md-50" style="min-width:220px;max-width:600px;">
+                {% csrf_token %}
+                <div class="input-group input-group-lg" style="border-radius: 18px; overflow: hidden; box-shadow: 2px 4px 8px #e0e0e0;">
+                    <input type="text" name="route_name" class="form-control" placeholder="" required style="background:#e9eaf0; border:none; border-radius: 18px 0 0 18px;">
+                    <button type="submit" class="btn btn-light" style="border-radius: 0 18px 18px 0; border:none; background:#d3d5db;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-12 text-center mb-4">
+            <h4 style="font-weight: 500; letter-spacing: 0.1em; text-shadow: 1px 2px 2px #bbb;">
+                目前查詢：
+                {% if start_stop and end_stop and route_name %}
+                    {{ start_stop }} - {{ end_stop }}　{{ route_name }}號公車
+                {% elif route_name %}
+                    {{ route_name }}號公車
+                {% endif %}
+            </h4>
+        </div>
+    </div>
+    {% if bus_data %}
+    <div class="row mb-3 justify-content-center">
+        <div class="col-12 d-flex justify-content-center mb-3">
+            <!-- 去程/回程切換開關 -->
+            <div id="direction-toggle" class="direction-toggle">
+                <button class="toggle-btn active" data-dir="0" id="goBtn">去程</button>
+                <button class="toggle-btn" data-dir="1" id="backBtn">回程</button>
+                <div class="toggle-slider" id="toggleSlider"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <!-- 去程表格 -->
+            <div id="goTable">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>站牌</th>
+                                <th>車牌</th>
+                                <th>預估到站</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bus in bus_data %}
+                                {% if bus.direction == 0 %}
+                                <tr>
+                                    <td>{{ bus.stop_name }}</td>
+                                    <td>{{ bus.plate_number }}</td>
+                                    <td>{{ bus.estimate_time }}</td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- 回程表格 -->
+            <div id="backTable" style="display:none;">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>站牌</th>
+                                <th>車牌</th>
+                                <th>預估到站</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bus in bus_data %}
+                                {% if bus.direction == 1 %}
+                                <tr>
+                                    <td>{{ bus.stop_name }}</td>
+                                    <td>{{ bus.plate_number }}</td>
+                                    <td>{{ bus.estimate_time }}</td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+@media (max-width: 768px) {
+    .container { max-width: 100% !important; padding: 0 4px; }
+    .input-group-lg > .form-control, .input-group-lg > .btn {
+        font-size: 1.1rem;
+        height: 2.5rem;
+    }
+    h4, h5 { font-size: 1.1rem; }
+    .table { font-size: 0.95rem; }
+}
+.direction-toggle {
+    position: relative;
+    display: inline-flex;
+    background: #e0e0e0;
+    border-radius: 20px;
+    box-shadow: 0 1px 4px #0001;
+    overflow: hidden;
+    width: 160px;
+    height: 40px;
+}
+.toggle-btn {
+    flex: 1 1 0;
+    border: none;
+    background: transparent;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+    z-index: 2;
+    transition: color 0.2s;
+    outline: none;
+}
+.toggle-btn.active {
+    color: #3377ee;
+}
+.toggle-slider {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 72px;
+    height: 32px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 1px 4px #0002;
+    transition: left 0.25s cubic-bezier(.4,2,.6,1);
+    z-index: 1;
+}
+.dark-toggle-btn {
+    background: #fff;
+    border: 2px solid #3377ee;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, border 0.2s;
+    font-size: 1.7rem;
+    box-shadow: 0 2px 8px #0001;
+    margin-left: 10px;
+    padding: 0;
+}
+.dark-toggle-btn .icon-sun,
+.dark-toggle-btn .icon-moon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 500%;
+    height: 100%;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+</style>
+<script>
+// 去程/回程切換
+const goBtn = document.getElementById('goBtn');
+const backBtn = document.getElementById('backBtn');
+const goTable = document.getElementById('goTable');
+const backTable = document.getElementById('backTable');
+const slider = document.getElementById('toggleSlider');
+if(goBtn && backBtn && goTable && backTable && slider) {
+    goBtn.onclick = function() {
+        goBtn.classList.add('active');
+        backBtn.classList.remove('active');
+        goTable.style.display = '';
+        backTable.style.display = 'none';
+        slider.style.left = '4px';
+    };
+    backBtn.onclick = function() {
+        goBtn.classList.remove('active');
+        backBtn.classList.add('active');
+        goTable.style.display = 'none';
+        backTable.style.display = '';
+        slider.style.left = '80px';
+    };
+}
+</script>
+{% endblock %} 
