@@ -13,16 +13,19 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables from .env file
+dotenv.load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-36_2k+3@7k(bw&a5-^j6-*lcb#hzmh7!%8k$&f*ps39*uzoy5p')
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
@@ -131,8 +134,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # TDX API 設定
-TDX_APP_ID = os.getenv('TDX_APP_ID', 's112056015-080df221-886f-4795')
-TDX_APP_KEY = os.getenv('TDX_APP_KEY', '8171a12f-a78a-4fc8-92b7-b208557c28b2')
+TDX_APP_ID = os.environ['TDX_APP_ID']
+TDX_APP_KEY = os.environ['TDX_APP_KEY']
 
 # Security settings
 SECURE_SSL_REDIRECT = not DEBUG
