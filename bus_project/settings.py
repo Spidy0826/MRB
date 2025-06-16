@@ -37,6 +37,7 @@ ALLOWED_HOSTS = ['*']  # 在生產環境中應該設定為實際的域名
 
 # Application definition
 
+# 應用程式列表，包含所有已安裝的 Django 應用
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -44,27 +45,29 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'businfo',
-    'whitenoise.runserver_nostatic',
+    'businfo',  # 公車資訊查詢的主要應用
+    'whitenoise.runserver_nostatic',  # 用於優化靜態檔案服務
 ]
 
+# 中間件設定，處理請求和回應的各種功能
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',  # 安全相關中間件
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # 靜態檔案優化中間件
+    'django.contrib.sessions.middleware.SessionMiddleware',  # 處理 session
+    'django.middleware.common.CommonMiddleware',  # 通用功能中間件
+    'django.middleware.csrf.CsrfViewMiddleware',  # CSRF 防護
+    'django.contrib.auth.middleware.AuthenticationMiddleware',  # 認證相關
+    'django.contrib.messages.middleware.MessageMiddleware',  # 訊息處理
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',  # 點擊劫持防護
 ]
 
 ROOT_URLCONF = 'bus_project.urls'
 
+# 模板設定
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # 指定模板目錄
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -83,10 +86,11 @@ WSGI_APPLICATION = 'bus_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# 資料庫設定，使用 dj-database-url 支援多種資料庫
 DATABASES = {
     'default': dj_database_url.config(
-        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
-        conn_max_age=600
+        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),  # 預設使用 SQLite
+        conn_max_age=600  # 資料庫連線存活時間（秒）
     )
 }
 
@@ -94,6 +98,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
+# 密碼驗證設定
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -125,24 +130,31 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [BASE_DIR / "static"]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# 靜態檔案設定
+STATIC_URL = 'static/'  # 靜態檔案的 URL 前綴
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # 靜態檔案收集目錄
+STATICFILES_DIRS = [BASE_DIR / "static"]  # 靜態檔案搜尋目錄
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # 使用 Whitenoise 優化靜態檔案
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# TDX API 設定
-TDX_APP_ID = os.getenv('TDX_APP_ID')
-TDX_APP_KEY = os.getenv('TDX_APP_KEY')
+# TDX API 認證資訊
+TDX_APP_ID = os.environ['TDX_APP_ID']  # 從環境變數讀取 TDX API ID
+TDX_APP_KEY = os.environ['TDX_APP_KEY']  # 從環境變數讀取 TDX API Key
 
 # Security settings
+# 強制將所有 HTTP 請求重定向到 HTTPS，確保資料傳輸安全
 SECURE_SSL_REDIRECT = not DEBUG
+# 設定 session cookie 只能通過 HTTPS 傳送，防止 session 被竊取
 SESSION_COOKIE_SECURE = not DEBUG
+# 設定 CSRF cookie 只能通過 HTTPS 傳送，防止跨站請求偽造攻擊
 CSRF_COOKIE_SECURE = not DEBUG
+# 啟用瀏覽器的 XSS 防護機制，防止惡意腳本注入攻擊
 SECURE_BROWSER_XSS_FILTER = True
+# 防止瀏覽器猜測（嗅探）內容類型，增加安全性
 SECURE_CONTENT_TYPE_NOSNIFF = True
+# 防止網站被嵌入到其他網站的框架中，避免點擊劫持攻擊
 X_FRAME_OPTIONS = 'DENY'

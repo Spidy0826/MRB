@@ -3,9 +3,11 @@
 {% block content %}
 <div class="container">
     <div class="row justify-content-center">
+        <!-- 查詢標題 -->
         <div class="col-12 text-center mb-4" style="margin-top: 32px;">
             <h5 style="font-weight: 500; letter-spacing: 0.1em;">請輸入要查詢的公車號碼</h5>
         </div>
+        <!-- 搜尋表單 -->
         <div class="col-12 d-flex justify-content-center mb-4">
             <form method="post" class="w-100 w-md-50" style="min-width:220px;max-width:600px;">
                 {% csrf_token %}
@@ -19,6 +21,7 @@
                 </div>
             </form>
         </div>
+        <!-- 當前查詢資訊顯示 -->
         <div class="col-12 text-center mb-4">
             <h4 style="font-weight: 500; letter-spacing: 0.1em; text-shadow: 1px 2px 2px #bbb;">
                 目前查詢：
@@ -99,6 +102,7 @@
 </div>
 
 <style>
+/* 行動裝置響應式設計 */
 @media (max-width: 768px) {
     .container { max-width: 100% !important; padding: 0 4px; }
     .input-group-lg > .form-control, .input-group-lg > .btn {
@@ -108,6 +112,7 @@
     h4, h5 { font-size: 1.1rem; }
     .table { font-size: 0.95rem; }
 }
+/* 去回程切換開關樣式 */
 .direction-toggle {
     position: relative;
     display: inline-flex;
@@ -118,6 +123,7 @@
     width: 160px;
     height: 40px;
 }
+/* 切換按鈕樣式 */
 .toggle-btn {
     flex: 1 1 0;
     border: none;
@@ -129,9 +135,11 @@
     transition: color 0.2s;
     outline: none;
 }
+/* 啟用狀態按鈕樣式 */
 .toggle-btn.active {
     color: #3377ee;
 }
+/* 滑動條樣式 */
 .toggle-slider {
     position: absolute;
     top: 4px;
@@ -144,6 +152,7 @@
     transition: left 0.25s cubic-bezier(.4,2,.6,1);
     z-index: 1;
 }
+/* 日夜模式切換按鈕樣式 */
 .dark-toggle-btn {
     background: #fff;
     border: 2px solid #3377ee;
@@ -160,25 +169,27 @@
     margin-left: 10px;
     padding: 0;
 }
+/* 日夜模式圖示容器樣式 */
 .dark-toggle-btn .icon-sun,
 .dark-toggle-btn .icon-moon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 500%;
+    width: 100%;
     height: 100%;
     font-size: 1.5rem;
     line-height: 1;
 }
 </style>
 <script>
-// 去程/回程切換
+// 去回程切換功能
 const goBtn = document.getElementById('goBtn');
 const backBtn = document.getElementById('backBtn');
 const goTable = document.getElementById('goTable');
 const backTable = document.getElementById('backTable');
 const slider = document.getElementById('toggleSlider');
 if(goBtn && backBtn && goTable && backTable && slider) {
+    // 去程按鈕點擊事件
     goBtn.onclick = function() {
         goBtn.classList.add('active');
         backBtn.classList.remove('active');
@@ -186,6 +197,7 @@ if(goBtn && backBtn && goTable && backTable && slider) {
         backTable.style.display = 'none';
         slider.style.left = '4px';
     };
+    // 回程按鈕點擊事件
     backBtn.onclick = function() {
         goBtn.classList.remove('active');
         backBtn.classList.add('active');

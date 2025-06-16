@@ -3,15 +3,18 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
+    <!-- 設定響應式設計的視口 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>台中公車即時到站查詢</title>
-    <!-- Bootstrap CSS -->
+    <!-- 引入 Bootstrap CSS 框架 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* 基本背景和過渡效果設定 */
         body {
             background-color: #fff;
             transition: background 0.3s, color 0.3s;
         }
+        /* 頂部導航欄樣式 */
         .navbar-mrb {
             background: #5b8df6;
             color: #fff;
@@ -23,12 +26,14 @@
             align-items: center;
             justify-content: space-between;
         }
+        /* 副標題樣式 */
         .navbar-mrb span {
             font-size: 2rem;
             font-weight: 400;
             letter-spacing: 0.1em;
             margin-left: 16px;
         }
+        /* 行動裝置響應式設計 */
         @media (max-width: 768px) {
             .navbar-mrb {
                 font-size: 2rem;
@@ -47,10 +52,11 @@
                 align-self: flex-end;
             }
         }
+        /* 主要內容區域樣式 */
         .main-content {
             margin-top: 0px;
         }
-        /* 夜覽模式 */
+        /* 夜覽模式樣式設定 */
         body.dark-mode {
             background-color: #23272f;
             color: #e0e0e0;
@@ -74,16 +80,17 @@
             background: #444b5a;
             color: #fff;
         }
-        /* 強制夜間模式下 input 文字為黑色 */
+        /* 確保夜間模式下輸入框文字清晰可見 */
         body.dark-mode .form-control {
             color: #000 !important;
         }
+        /* 頂部右側按鈕容器樣式 */
         .topbar-right {
             display: flex;
             align-items: center;
             gap: 0px;
         }
-        /* 單一圓形日夜模式按鈕，icon絕對置中 */
+        /* 日夜模式切換按鈕樣式 */
         .dark-toggle-btn {
             background: #fff;
             border: 2px solid #3377ee;
@@ -100,6 +107,7 @@
             margin-left: 10px;
             padding: 0;
         }
+        /* 日夜模式圖示容器樣式 */
         .dark-toggle-btn .icon-sun,
         .dark-toggle-btn .icon-moon {
             display: flex;
@@ -111,6 +119,7 @@
             line-height: 1;
             margin: 0;
         }
+        /* 日夜模式圖示樣式 */
         .dark-toggle-btn .icon-sun img,
         .dark-toggle-btn .icon-moon img {
             width: 24px;
@@ -118,9 +127,11 @@
             display: block;
             margin: auto;
         }
+        /* 按鈕懸停效果 */
         .dark-toggle-btn:hover {
             background: #e0e0e0;
         }
+        /* 夜間模式按鈕樣式 */
         body.dark-mode .dark-toggle-btn {
             background: #23272f;
             border-color: #ffe066;
@@ -128,9 +139,11 @@
     </style>
 </head>
 <body>
+    <!-- 頂部導航欄 -->
     <div class="navbar-mrb">
         <div>M-R-B <span>中途小巴</span></div>
         <div class="topbar-right">
+            <!-- 日夜模式切換按鈕 -->
             <button class="dark-toggle-btn" id="darkModeToggle" title="切換夜覽模式">
                 <span id="darkModeIcon" class="icon-sun">
                     <img src="{% static 'images/sun-icon.png' %}" alt="sun" style="width: 24px; height: 24px;">
@@ -138,19 +151,23 @@
             </button>
         </div>
     </div>
+    <!-- 主要內容區域 -->
     <div class="main-content">
         {% block content %}
         {% endblock %}
     </div>
-    <!-- Bootstrap JS -->
+    <!-- 引入 Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+    // 日夜模式切換功能
     document.addEventListener('DOMContentLoaded', function() {
         const toggleBtn = document.getElementById('darkModeToggle');
         const icon = document.getElementById('darkModeIcon');
         const body = document.body;
         const sunImg = '<img src="{% static "images/sun-icon.png" %}" alt="sun" style="width: 24px; height: 24px;">';
         const moonImg = '<img src="{% static "images/moon-icon.png" %}" alt="moon" style="width: 24px; height: 24px;">';
+        
+        // 設定日夜模式狀態
         function setDarkMode(on) {
             if(on) {
                 body.classList.add('dark-mode');
@@ -162,9 +179,12 @@
                 icon.className = 'icon-sun';
             }
         }
-        // 讀取 localStorage
+        
+        // 從 localStorage 讀取使用者偏好
         const darkPref = localStorage.getItem('darkMode') === 'true';
         setDarkMode(darkPref);
+        
+        // 切換按鈕點擊事件
         toggleBtn.onclick = function() {
             const isDark = body.classList.toggle('dark-mode');
             localStorage.setItem('darkMode', isDark);
